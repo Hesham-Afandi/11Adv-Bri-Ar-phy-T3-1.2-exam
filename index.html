@@ -1,1 +1,346 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚛️ Grade 11 Advanced Inspire - Conservation of Momentum (1.2)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Cairo', sans-serif; }
+        body.en-mode { font-family: 'Inter', sans-serif; }
+        .correct { background-color: #dcfce7 !important; border-color: #16a34a !important; }
+        .incorrect { background-color: #fee2e2 !important; border-color: #dc2626 !important; }
+        .formula { font-family: 'Times New Roman', serif; font-style: italic; direction: ltr; display: inline-block; }
+        .timer-warning { color: #dc2626 !important; animation: pulse 1s infinite; }
+        @keyframes pulse { 50% { opacity: 0.7; } }
+        @media print { .no-print { display: none !important; } }
+        .success-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-weight: bold; font-size: 0.875rem; }
+        .grade-excellent { background: #dcfce7; color: #166534; }
+        .grade-good { background: #fef3c7; color: #92400e; }
+        .grade-pass { background: #dbeafe; color: #1e40af; }
+        .grade-fail { background: #fee2e2; color: #991b1b; }
+        .lang-switch {
+            position: fixed; top: 16px; left: 16px; z-index: 100;
+            background: white; padding: 6px; border-radius: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15); display: flex; gap: 4px;
+            border: 2px solid #0d9488;
+        }
+        [dir="ltr"] .lang-switch { left: auto; right: 16px; }
+        .lang-btn {
+            padding: 6px 14px; border-radius: 20px; cursor: pointer; font-weight: bold;
+            transition: all 0.3s; border: none; font-size: 0.875rem;
+            background: transparent; color: #6b7280;
+        }
+        .lang-btn.active { background: #0d9488; color: white; box-shadow: 0 2px 6px rgba(13,148,136,0.4); }
+        .lang-btn:hover:not(.active) { background: #f0fdfa; color: #0d9488; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 p-4 md:p-8 min-h-screen">
 
+    <div class="lang-switch no-print">
+        <button class="lang-btn active" onclick="setLanguage('ar')" id="btn-ar">عربي</button>
+        <button class="lang-btn" onclick="setLanguage('en')" id="btn-en">EN</button>
+    </div>
+
+    <div id="timer-container" class="max-w-4xl mx-auto mb-4 text-center no-print">
+        <div class="bg-white p-4 rounded-xl shadow-md inline-block border-2 border-teal-100">
+            <span class="text-gray-600 ml-2" data-ar="⏱️ الوقت المتبقي:" data-en="⏱️ Time Remaining:">⏱️ الوقت المتبقي:</span>
+            <span id="timer" class="text-2xl font-bold text-teal-600 font-mono">55:00</span>
+        </div>
+    </div>
+
+    <div class="max-w-4xl mx-auto mb-6 flex flex-wrap gap-3 justify-center no-print">
+        <button onclick="toggleAnswers()" class="bg-teal-600 hover:bg-teal-700 text-white px-5 py-2 rounded-lg font-medium transition shadow cursor-pointer" data-ar="👁️ إظهار / إخفاء الإجابات" data-en="👁️ Show / Hide Answers">👁️ إظهار / إخفاء الإجابات</button>
+        <button onclick="window.print()" class="bg-gray-800 hover:bg-gray-900 text-white px-5 py-2 rounded-lg font-medium transition shadow cursor-pointer" data-ar="🖨️ طباعة / PDF" data-en="🖨️ Print / PDF">🖨️ طباعة / PDF</button>
+    </div>
+
+    <header class="max-w-4xl mx-auto bg-white p-6 rounded-xl shadow-md mb-8 border-r-4 border-teal-600">
+        <div class="text-center">
+            <h1 class="text-2xl md:text-3xl font-bold text-gray-900 mb-2" data-ar="️ فيزياء الصف الحادي عشر متقدم - Inspire" data-en="⚛️ Grade 11 Advanced Physics - Inspire">⚛️ فيزياء الصف الحادي عشر متقدم - Inspire</h1>
+            <h2 class="text-lg text-teal-600 font-semibold" data-ar="الدرس 1.2: حفظ الزخم والتصادمات المرنة" data-en="Lesson 1.2: Conservation of Momentum & Elastic Collisions">الدرس 1.2: حفظ الزخم والتصادمات المرنة</h2>
+            <p class="text-sm text-gray-600 mt-2" data-ar="قانون حفظ الزخم، التصادمات في بعد واحد، الحالات الخاصة" data-en="Conservation Law, 1D Collisions & Special Cases">قانون حفظ الزخم، التصادمات في بعد واحد، الحالات الخاصة</p>
+        </div>
+        <div class="mt-4 flex flex-wrap justify-center gap-4 text-sm text-gray-600">
+            <span><span data-ar="📅 التاريخ:" data-en="📅 Date:"> التاريخ:</span> <input type="text" class="border-b border-gray-400 bg-transparent w-28 text-center"></span>
+            <span><span data-ar="👤 الاسم:" data-en="👤 Name:"> الاسم:</span> <input type="text" id="studentName" class="border-b border-gray-400 bg-transparent w-32 text-center" placeholder="Enter name"></span>
+            <span><span data-ar="🏫 الشعبة:" data-en="🏫 Class:">🏫 الشعبة:</span> <input type="text" id="studentClass" class="border-b border-gray-400 bg-transparent w-28 text-center" placeholder="Class"></span>
+            <span><span data-ar="⏱️ المدة: 55 دقيقة" data-en="⏱️ Duration: 55 min">⏱️ المدة: 55 دقيقة</span></span>
+            <span><span data-ar="📊 المجموع: 100 درجة" data-en="📊 Total: 100 pts">📊 المجموع: 100 درجة</span></span>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto space-y-8" id="exam-content"></main>
+
+    <div class="text-center no-print pb-8 mt-8">
+        <button onclick="gradeExam()" class="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white text-lg px-10 py-4 rounded-xl font-bold shadow-xl transition transform hover:scale-105 cursor-pointer" data-ar="📝 تسليم وتصحيح الامتحان" data-en="📝 Submit & Grade Exam">📝 تسليم وتصحيح الامتحان</button>
+    </div>
+
+    <div id="results-panel" class="max-w-4xl mx-auto mt-8 bg-white p-8 rounded-2xl shadow-2xl border-t-4 border-emerald-500 hidden no-print">
+        <h2 class="text-3xl font-bold text-gray-900 mb-6 text-center" data-ar="📊 نتائج الامتحان" data-en=" Exam Results">📊 نتائج الامتحان</h2>
+        <div class="grid md:grid-cols-3 gap-4 mb-6">
+            <div class="bg-blue-50 p-4 rounded-xl text-center"><p data-ar="اسم الطالب" data-en="Student Name">اسم الطالب</p><p id="res-name" class="font-bold text-xl text-teal-700">-</p></div>
+            <div class="bg-purple-50 p-4 rounded-xl text-center"><p data-ar="التاريخ" data-en="Date">التاريخ</p><p id="res-date" class="font-bold text-xl text-purple-700">-</p></div>
+            <div class="bg-emerald-50 p-4 rounded-xl text-center"><p data-ar="المجموع" data-en="Score">المجموع</p><p id="res-total" class="font-bold text-3xl text-emerald-600">0 / 100</p></div>
+        </div>
+        <div class="text-center mb-6">
+            <span id="success-badge" class="success-badge grade-excellent">-</span>
+            <p id="success-percent" class="text-4xl font-bold text-emerald-600 mt-2">100%</p>
+            <p class="text-sm text-gray-500" data-ar="نسبة النجاح" data-en="Success Rate">نسبة النجاح</p>
+        </div>
+        <div class="bg-gray-50 p-6 rounded-xl mb-6">
+            <h3 class="font-bold text-lg mb-4 text-gray-800" data-ar="📈 تفصيل الأداء حسب القسم:" data-en="📈 Performance Breakdown:"> تفصيل الأداء حسب القسم:</h3>
+            <div class="space-y-3">
+                <div class="flex justify-between items-center"><span class="text-gray-700" data-ar="قانون حفظ الزخم" data-en="Conservation of Momentum">قانون حفظ الزخم</span><span id="sec1-score" class="font-bold text-teal-600">0/4</span></div>
+                <div class="flex justify-between items-center"><span class="text-gray-700" data-ar="التصادمات المرنة" data-en="Elastic Collisions">التصادمات المرنة</span><span id="sec2-score" class="font-bold text-teal-600">0/4</span></div>
+                <div class="flex justify-between items-center"><span class="text-gray-700" data-ar="الحالات الخاصة" data-en="Special Cases">الحالات الخاصة</span><span id="sec3-score" class="font-bold text-teal-600">0/4</span></div>
+                <div class="flex justify-between items-center"><span class="text-gray-700" data-ar="تطبيقات عملية" data-en="Practical Applications">تطبيقات عملية</span><span id="sec4-score" class="font-bold text-teal-600">0/4</span></div>
+                <div class="flex justify-between items-center"><span class="text-gray-700" data-ar="الانفجارات والارتداد" data-en="Explosions & Recoil">الانفجارات والارتداد</span><span id="sec5-score" class="font-bold text-teal-600">0/4</span></div>
+            </div>
+        </div>
+        <div class="text-center mb-6">
+            <button id="sendEmailBtn" onclick="sendResultsToEmail()" class="bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700 text-white text-lg px-8 py-3 rounded-xl font-bold shadow-xl transition transform hover:scale-105 cursor-pointer" data-ar="📧 إرسال النتائج للمعلم" data-en="📧 Send Results to Teacher">📧 إرسال النتائج للمعلم</button>
+            <p id="emailStatus" class="text-sm mt-2 text-center font-medium"></p>
+        </div>
+        <div class="flex gap-3 justify-center">
+            <button onclick="window.print()" class="bg-gray-700 text-white px-6 py-3 rounded-lg font-semibold" data-ar="🖨️ طباعة النتائج" data-en="🖨️ Print Results">️ طباعة النتائج</button>
+        </div>
+    </div>
+
+    <footer class="max-w-4xl mx-auto mt-10 mb-8 text-center text-gray-500 text-sm no-print">
+        © <span data-ar="الفيزياء للصف الحادي عشر متقدم - Inspire | الدرس 1.2" data-en="Grade 11 Advanced Physics - Inspire | Lesson 1.2">الفيزياء للصف الحادي عشر متقدم - Inspire | الدرس 1.2</span> | Mr. Mohammed Hesham
+    </footer>
+
+<script>
+const examData = {
+    sections: [
+        {
+            id: 'sec1',
+            title: { ar: ' الجزء الأول: قانون حفظ الزخم', en: '🔹 Part 1: Conservation of Momentum Law' },
+            questions: [
+                { q: { ar: 'ينص قانون حفظ الزخم الخطي على أن:', en: 'The law of conservation of linear momentum states that:' }, options: [{ ar: 'الزخم يزداد في النظام المعزول', en: 'Momentum increases in an isolated system' }, { ar: 'الزخم الكلي يبقى ثابتاً في النظام المعزول', en: 'Total momentum remains constant in an isolated system' }, { ar: 'الزخم يُفقد في كل التصادمات', en: 'Momentum is lost in all collisions' }, { ar: 'الزخم يعتمد على الطاقة فقط', en: 'Momentum depends only on energy' }], correct: 1, answer: { ar: 'إذا كانت F_net = 0 فإن Σp_initial = Σp_final', en: 'If F_net = 0 then Σp_initial = Σp_final' } },
+                { q: { ar: 'شرط تطبيق قانون حفظ الزخم هو:', en: 'The condition for applying conservation of momentum is:' }, options: [{ ar: 'وجود قوى خارجية كبيرة', en: 'Presence of large external forces' }, { ar: 'النظام مغلق ومعزول (F_net = 0)', en: 'System is closed and isolated (F_net = 0)' }, { ar: 'الكتلة تتغير باستمرار', en: 'Mass changes continuously' }, { ar: 'السرعة ثابتة دائماً', en: 'Velocity is always constant' }], correct: 1, answer: { ar: 'القانون ينطبق فقط عندما محصلة القوى الخارجية = صفر', en: 'The law applies only when net external forces = zero' } },
+                { q: { ar: 'جسمان كتلتهما 3 kg و 5 kg يتحركان بسرعة 4 m/s و -2 m/s على الترتيب. الزخم الكلي:', en: 'Two objects (3 kg and 5 kg) move at 4 m/s and -2 m/s respectively. Total momentum:' }, options: [{ ar: '22 kg·m/s', en: '22 kg·m/s' }, { ar: '2 kg·m/s', en: '2 kg·m/s' }, { ar: '-22 kg·m/s', en: '-22 kg·m/s' }, { ar: '12 kg·m/s', en: '12 kg·m/s' }], correct: 1, answer: { ar: 'p = (3)(4) + (5)(-2) = 12 - 10 = 2 kg·m/s', en: 'p = (3)(4) + (5)(-2) = 12 - 10 = 2 kg·m/s' } },
+                { q: { ar: 'في النظام المعزول، القوى الخارجية المؤثرة:', en: 'In an isolated system, the external forces acting are:' }, options: [{ ar: 'كبيرة جداً', en: 'Very large' }, { ar: 'تساوي صفراً', en: 'Equal to zero' }, { ar: 'تتغير مع الزمن', en: 'Change with time' }, { ar: 'تساوي الكتلة', en: 'Equal to mass' }], correct: 1, answer: { ar: 'النظام المعزول: لا توجد قوى خارجية محصلة (F_net = 0)', en: 'Isolated system: no net external forces (F_net = 0)' } }
+            ]
+        },
+        {
+            id: 'sec2',
+            title: { ar: '🔹 الجزء الثاني: التصادمات المرنة في بعد واحد', en: '🔹 Part 2: Elastic Collisions in 1D' },
+            questions: [
+                { q: { ar: 'في التصادم المرن في بعد واحد، يُحفظ:', en: 'In a 1D elastic collision, conserved quantities are:' }, options: [{ ar: 'الزخم فقط', en: 'Only momentum' }, { ar: 'الطاقة الحركية فقط', en: 'Only kinetic energy' }, { ar: 'الزخم والطاقة الحركية معاً', en: 'Both momentum and kinetic energy' }, { ar: 'لا شيء مما سبق', en: 'None of the above' }], correct: 2, answer: { ar: 'التصادم المرن يحفظ الزخم والطاقة الحركية معاً', en: 'Elastic collision conserves both momentum and kinetic energy' } },
+                { q: { ar: 'الصيغة النهائية للسرعة بعد التصادم المرن للجسم الأول هي:', en: 'The final velocity formula for the first object in elastic collision is:' }, options: [{ ar: 'Pf1x = [(m₁-m₂)/(m₁+m₂)]Pi1x + [2m₂/(m₁+m₂)]Pi2x', en: 'Pf1x = [(m₁-m₂)/(m₁+m₂)]Pi1x + [2m₂/(m₁+m₂)]Pi2x' }, { ar: 'Pf1x = m₁v₁', en: 'Pf1x = m₁v₁' }, { ar: 'Pf1x = (m₁+m₂)v', en: 'Pf1x = (m₁+m₂)v' }, { ar: 'Pf1x = m₁v₁²', en: 'Pf1x = m₁v₁²' }], correct: 0, answer: { ar: 'هذه الصيغة مشتقة من قانوني حفظ الزخم والطاقة', en: 'This formula is derived from conservation of momentum and energy laws' } },
+                { q: { ar: 'جسم كتلته 2 kg بسرعة 6 m/s اصطدم بجسم ساكن كتلته 4 kg (تصادم مرن). السرعة النهائية للجسم الأول:', en: 'A 2 kg object at 6 m/s hits a stationary 4 kg object (elastic). Final velocity of first object:' }, options: [{ ar: '-2 m/s', en: '-2 m/s' }, { ar: '2 m/s', en: '2 m/s' }, { ar: '6 m/s', en: '6 m/s' }, { ar: '0 m/s', en: '0 m/s' }], correct: 0, answer: { ar: 'v1f = [(2-4)/(2+4)](6) = (-2/6)(6) = -2 m/s', en: 'v1f = [(2-4)/(2+4)](6) = (-2/6)(6) = -2 m/s' } },
+                { q: { ar: 'في التصادم المرن، الفرق الأساسي عن غير المرن هو:', en: 'In elastic collision, the key difference from inelastic is:' }, options: [{ ar: 'الزخم لا يحفظ', en: 'Momentum is not conserved' }, { ar: 'الأجسام تلتصق', en: 'Objects stick together' }, { ar: 'الطاقة الحركية تُحفظ بالكامل', en: 'Kinetic energy is fully conserved' }, { ar: 'القوى الخارجية كبيرة', en: 'External forces are large' }], correct: 2, answer: { ar: 'في التصادم المرن: KE_initial = KE_final (لا يوجد فقد في الطاقة)', en: 'In elastic collision: KE_initial = KE_final (no energy loss)' } }
+            ]
+        },
+        {
+            id: 'sec3',
+            title: { ar: '🔹 الجزء الثالث: الحالات الخاصة', en: '🔹 Part 3: Special Cases' },
+            questions: [
+                { q: { ar: 'في التصادم المرن عندما m₁ = m₂ والجسم الثاني ساكن:', en: 'In elastic collision when m₁ = m₂ and second object is at rest:' }, options: [{ ar: 'الجسم الأول يستمر بنفس السرعة', en: 'First object continues at same velocity' }, { ar: 'الجسمان يتحركان معاً', en: 'Both objects move together' }, { ar: 'الجسم الأول يتوقف والجسم الثاني يأخذ سرعته', en: 'First object stops and second takes its velocity' }, { ar: 'كلا الجسمين يرتدان', en: 'Both objects bounce back' }], correct: 2, answer: { ar: 'عند m₁=m₂: تبادل كامل للسرعات (v1f=0, v2f=v1i)', en: 'When m₁=m₂: complete velocity exchange (v1f=0, v2f=v1i)' } },
+                { q: { ar: 'إذا كانت m₂ >> m₁ والجسم الثاني ساكن، فإن الجسم الأول:', en: 'If m₂ >> m₁ and second object is at rest, the first object:' }, options: [{ ar: 'يستمر بنفس السرعة', en: 'Continues at same velocity' }, { ar: 'يرتد بنفس السرعة تقريباً (v1f ≈ -v1i)', en: 'Bounces back with approximately same velocity (v1f ≈ -v1i)' }, { ar: 'يتوقف تماماً', en: 'Stops completely' }, { ar: 'تتضاعف سرعته', en: 'Velocity doubles' }], correct: 1, answer: { ar: 'مثل كرة ترتد عن جدار: (m₂-m₁)/(m₂+m₁) ≈ -1', en: 'Like ball bouncing off wall: (m₂-m₁)/(m₂+m₁) ≈ -1' } },
+                { q: { ar: 'إذا كانت m₁ >> m₂ والجسم الثاني ساكن، فإن الجسم الثاني:', en: 'If m₁ >> m₂ and second object is at rest, the second object:' }, options: [{ ar: 'يكتسب سرعة ≈ 0', en: 'Gains velocity ≈ 0' }, { ar: 'يكتسب سرعة ≈ v1i', en: 'Gains velocity ≈ v1i' }, { ar: 'يكتسب سرعة ≈ 2v1i', en: 'Gains velocity ≈ 2v1i' }, { ar: 'يكتسب سرعة ≈ -v1i', en: 'Gains velocity ≈ -v1i' }], correct: 2, answer: { ar: '2m₁/(m₁+m₂) ≈ 2، إذن v2f ≈ 2v1i', en: '2m₁/(m₁+m₂) ≈ 2, so v2f ≈ 2v1i' } },
+                { q: { ar: 'كرة بيسبول (0.145 kg) بسرعة 40 m/s اصطدمت بمضرب (كتلة كبيرة جداً). سرعة الكرة بعد الارتداد تقريباً:', en: 'A baseball (0.145 kg) at 40 m/s hits a very massive bat. Speed after bounce approximately:' }, options: [{ ar: '0 m/s', en: '0 m/s' }, { ar: '20 m/s', en: '20 m/s' }, { ar: '40 m/s', en: '40 m/s' }, { ar: '80 m/s', en: '80 m/s' }], correct: 2, answer: { ar: 'المضرب كتلته كبيرة جداً → الكرة ترتد بنفس السرعة تقريباً (40 m/s)', en: 'Bat is very massive → ball bounces back at approximately same speed (40 m/s)' } }
+            ]
+        },
+        {
+            id: 'sec4',
+            title: { ar: '🔹 الجزء الرابع: تطبيقات عملية', en: '🔹 Part 4: Practical Applications' },
+            questions: [
+                { q: { ar: 'كرة كتلتها 0.2 kg تتحرك بسرعة 10 m/s ارتدت بسرعة 8 m/s. مقدار الدفع:', en: 'A 0.2 kg ball moving at 10 m/s bounces back at 8 m/s. Impulse magnitude:' }, options: [{ ar: '0.4 N·s', en: '0.4 N·s' }, { ar: '1.6 N·s', en: '1.6 N·s' }, { ar: '3.6 N·s', en: '3.6 N·s' }, { ar: '0.36 N·s', en: '0.36 N·s' }], correct: 2, answer: { ar: 'J = m(vf - vi) = 0.2(-8 - 10) = 0.2(-18) = -3.6 N·s، المقدار = 3.6', en: 'J = m(vf - vi) = 0.2(-8 - 10) = 0.2(-18) = -3.6 N·s, magnitude = 3.6' } },
+                { q: { ar: 'إذا كان الدفع 12 N·s وزمن التصادم 0.003 s، فإن متوسط القوة:', en: 'If impulse is 12 N·s and collision time is 0.003 s, average force:' }, options: [{ ar: '36 N', en: '36 N' }, { ar: '400 N', en: '400 N' }, { ar: '4000 N', en: '4000 N' }, { ar: '0.036 N', en: '0.036 N' }], correct: 2, answer: { ar: 'F = J/Δt = 12/0.003 = 4000 N', en: 'F = J/Δt = 12/0.003 = 4000 N' } },
+                { q: { ar: 'لتقليل القوة المؤثرة على جسم عند تصادم، يجب:', en: 'To reduce force on an object during collision, we must:' }, options: [{ ar: 'تقليل زمن التصادم', en: 'Decrease collision time' }, { ar: 'زيادة زمن التصادم', en: 'Increase collision time' }, { ar: 'زيادة الدفع', en: 'Increase impulse' }, { ar: 'زيادة السرعة', en: 'Increase velocity' }], correct: 1, answer: { ar: 'F = Δp/Δt، فزيادة Δt تقلل F (مبدأ الوسادة الهوائية)', en: 'F = Δp/Δt, so increasing Δt reduces F (airbag principle)' } },
+                { q: { ar: 'كرة جولف (0.045 kg) انطلقت بسرعة 65 m/s بعد ضربها خلال 0.0001 s. متوسط القوة:', en: 'A golf ball (0.045 kg) launched at 65 m/s after being hit in 0.0001 s. Average force:' }, options: [{ ar: '2.9 N', en: '2.9 N' }, { ar: '292.5 N', en: '292.5 N' }, { ar: '29,250 N', en: '29,250 N' }, { ar: '292,500 N', en: '292,500 N' }], correct: 2, answer: { ar: 'F = mΔv/Δt = (0.045)(65)/0.0001 = 29,250 N', en: 'F = mΔv/Δt = (0.045)(65)/0.0001 = 29,250 N' } }
+            ]
+        },
+        {
+            id: 'sec5',
+            title: { ar: '🔹 الجزء الخامس: الانفجارات والارتداد', en: ' Part 5: Explosions & Recoil' },
+            questions: [
+                { q: { ar: 'في الانفجار، الزخم الكلي قبل الانفجار:', en: 'In an explosion, total momentum before explosion:' }, options: [{ ar: 'أكبر من بعده', en: 'Greater than after' }, { ar: 'أقل من بعده', en: 'Less than after' }, { ar: 'يساوي الصفر (إذا كان الجسم ساكناً)', en: 'Equals zero (if object was at rest)' }, { ar: 'يساوي الطاقة', en: 'Equals energy' }], correct: 2, answer: { ar: 'قبل الانفجار الجسم ساكن، إذن p = 0', en: 'Before explosion object is at rest, so p = 0' } },
+                { q: { ar: 'عند إطلاق رصاصة من بندقية، البندقية ترتد للخلف لأن:', en: 'When firing a bullet, the gun recoils because:' }, options: [{ ar: 'الزخم يحفظ', en: 'Momentum is conserved' }, { ar: 'القوة أكبر', en: 'Force is greater' }, { ar: 'الكتلة أكبر', en: 'Mass is greater' }, { ar: 'الطاقة تحفظ', en: 'Energy is conserved' }], correct: 0, answer: { ar: 'الزخم الكلي = صفر قبل وبعد الإطلاق', en: 'Total momentum = 0 before and after firing' } },
+                { q: { ar: 'إذا كانت كتلة البندقية 4 kg وكتلة الرصاصة 0.01 kg وسرعة الرصاصة 400 m/s، فإن سرعة ارتداد البندقية:', en: 'If gun mass = 4 kg, bullet mass = 0.01 kg, bullet velocity = 400 m/s, recoil velocity:' }, options: [{ ar: '1 m/s', en: '1 m/s' }, { ar: '2 m/s', en: '2 m/s' }, { ar: '4 m/s', en: '4 m/s' }, { ar: '0.01 m/s', en: '0.01 m/s' }], correct: 0, answer: { ar: '0 = 0.01×400 + 4×v → v = -1 m/s', en: '0 = 0.01×400 + 4×v → v = -1 m/s' } },
+                { q: { ar: 'جسم ساكن كتلته 6 kg انفجر إلى جزأين: 2 kg بسرعة 3 m/s. سرعة الجزء الآخر:', en: 'A stationary 6 kg object explodes into two parts: 2 kg at 3 m/s. Velocity of other part:' }, options: [{ ar: '1.5 m/s', en: '1.5 m/s' }, { ar: '2 m/s', en: '2 m/s' }, { ar: '3 m/s', en: '3 m/s' }, { ar: '6 m/s', en: '6 m/s' }], correct: 0, answer: { ar: '0 = 2×3 + 4×v → v = -6/4 = -1.5 m/s', en: '0 = 2×3 + 4×v → v = -6/4 = -1.5 m/s' } }
+            ]
+        }
+    ]
+};
+
+let currentLang = 'ar';
+let timeRemaining = 3300;
+let timerInterval;
+
+function setLanguage(lang) {
+    currentLang = lang;
+    document.documentElement.lang = lang;
+    document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+    document.getElementById('btn-ar').classList.toggle('active', lang === 'ar');
+    document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+    document.body.classList.toggle('en-mode', lang === 'en');
+    document.querySelectorAll('[data-ar][data-en]').forEach(el => {
+        el.textContent = el.getAttribute(`data-${lang}`);
+    });
+    renderExam();
+}
+
+function renderExam() {
+    const container = document.getElementById('exam-content');
+    const labels = {
+        ar: { option: ['أ', 'ب', 'ج', 'د'], answer: '✅ الإجابة:' },
+        en: { option: ['A', 'B', 'C', 'D'], answer: '✅ Answer:' }
+    };
+    const lbl = labels[currentLang];
+    const isRTL = currentLang === 'ar';
+    
+    let html = '';
+    let globalIdx = 1;
+    
+    examData.sections.forEach((section) => {
+        html += `<section class="bg-white p-6 rounded-xl shadow-lg">
+            <h2 class="text-xl font-bold mb-4 text-teal-700">${section.title[currentLang]}</h2>
+            <ol class="space-y-4 text-sm">`;
+            
+        section.questions.forEach((q) => {
+            const borderSide = isRTL ? 'border-r-4 pr-4' : 'border-l-4 pl-4';
+            html += `<li class="${borderSide} border-teal-500 py-2" id="q-${globalIdx}">
+                <strong>${globalIdx}.</strong> ${q.q[currentLang]}<br>`;
+                
+            q.options.forEach((opt, oIdx) => {
+                const radioSide = isRTL ? 'mr-4 ml-2' : 'ml-4 mr-2';
+                html += `<label class="cursor-pointer block mt-1 ${isRTL ? 'mr-4' : 'ml-4'}">
+                    <input type="radio" name="q${globalIdx}" value="${String.fromCharCode(97 + oIdx)}" class="${radioSide}"> 
+                    ${lbl.option[oIdx]}) ${opt[currentLang]}
+                </label>`;
+            });
+            
+            html += `<div class="answer-box text-green-700 mt-2 font-medium hidden">
+                ${lbl.answer} ${lbl.option[q.correct]}) ${q.options[q.correct][currentLang]} — ${q.answer[currentLang]}
+            </div></li>`;
+            globalIdx++;
+        });
+        
+        html += `</ol></section>`;
+    });
+    
+    container.innerHTML = html;
+}
+
+function startTimer() {
+    document.getElementById('timer-container').style.display = 'block';
+    timerInterval = setInterval(() => {
+        timeRemaining--;
+        const minutes = Math.floor(timeRemaining / 60);
+        const seconds = timeRemaining % 60;
+        const timerEl = document.getElementById('timer');
+        timerEl.textContent = `${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`;
+        if (timeRemaining <= 300) timerEl.classList.add('timer-warning');
+        if (timeRemaining <= 0) {
+            clearInterval(timerInterval);
+            alert(currentLang === 'ar' ? "انتهى الوقت! سيتم تسليم الامتحان تلقائياً." : "Time's up!");
+            gradeExam();
+        }
+    }, 1000);
+}
+
+function toggleAnswers() {
+    document.querySelectorAll('.answer-box').forEach(el => el.classList.toggle('hidden'));
+}
+
+function gradeExam() {
+    let correctCount = 0;
+    const correctAnswersLetters = ['b','b','b','b','c','a','a','c','c','b','c','c','c','c','b','c','a','a','a','a'];
+    let sec1=0, sec2=0, sec3=0, sec4=0, sec5=0;
+    
+    for (let i = 1; i <= 20; i++) {
+        const selected = document.querySelector(`input[name="q${i}"]:checked`);
+        const li = document.getElementById(`q-${i}`);
+        const isCorrect = selected && selected.value === correctAnswersLetters[i-1];
+        
+        if (isCorrect) {
+            correctCount++;
+            li.classList.add('correct');
+            li.classList.remove('incorrect');
+            if (i <= 4) sec1++;
+            else if (i <= 8) sec2++;
+            else if (i <= 12) sec3++;
+            else if (i <= 16) sec4++;
+            else sec5++;
+        } else {
+            li.classList.add('incorrect');
+            li.classList.remove('correct');
+        }
+    }
+
+    const score = (correctCount / 20) * 100;
+    const successRate = Math.round(score);
+    
+    document.getElementById('res-total').textContent = `${Math.round(score)} / 100`;
+    document.getElementById('res-name').textContent = document.getElementById('studentName').value || (currentLang === 'ar' ? 'طالب' : 'Student');
+    document.getElementById('res-date').textContent = new Date().toLocaleDateString(currentLang === 'ar' ? 'ar-AE' : 'en-US');
+    document.getElementById('sec1-score').textContent = `${sec1}/4`;
+    document.getElementById('sec2-score').textContent = `${sec2}/4`;
+    document.getElementById('sec3-score').textContent = `${sec3}/4`;
+    document.getElementById('sec4-score').textContent = `${sec4}/4`;
+    document.getElementById('sec5-score').textContent = `${sec5}/4`;
+    
+    const badge = document.getElementById('success-badge');
+    document.getElementById('success-percent').textContent = `${successRate}%`;
+    
+    if (currentLang === 'ar') {
+        if (successRate >= 90) { badge.textContent = 'ممتاز'; badge.className = 'success-badge grade-excellent'; }
+        else if (successRate >= 75) { badge.textContent = 'جيد جداً'; badge.className = 'success-badge grade-good'; }
+        else if (successRate >= 50) { badge.textContent = 'جيد'; badge.className = 'success-badge grade-pass'; }
+        else { badge.textContent = 'يحتاج تحسين'; badge.className = 'success-badge grade-fail'; }
+    } else {
+        if (successRate >= 90) { badge.textContent = 'Excellent'; badge.className = 'success-badge grade-excellent'; }
+        else if (successRate >= 75) { badge.textContent = 'Very Good'; badge.className = 'success-badge grade-good'; }
+        else if (successRate >= 50) { badge.textContent = 'Good'; badge.className = 'success-badge grade-pass'; }
+        else { badge.textContent = 'Needs Improvement'; badge.className = 'success-badge grade-fail'; }
+    }
+    
+    document.getElementById('results-panel').classList.remove('hidden');
+    document.getElementById('results-panel').scrollIntoView({ behavior: 'smooth' });
+    document.getElementById('sendEmailBtn').classList.remove('hidden');
+}
+
+function sendResultsToEmail() {
+    const btn = document.getElementById('sendEmailBtn');
+    const status = document.getElementById('emailStatus');
+    btn.disabled = true;
+    btn.textContent = currentLang === 'ar' ? '⏳ جاري الإرسال...' : '⏳ Sending...';
+
+    const name = document.getElementById('studentName').value || 'N/A';
+    const studentClass = document.getElementById('studentClass').value || 'N/A';
+    const date = document.querySelector('input[type="text"]').value || new Date().toLocaleDateString();
+    const score = document.getElementById('res-total').textContent;
+    const successRate = document.getElementById('success-percent').textContent;
+
+    const PUBLIC_KEY = "Rb3Lq8tXaFmc5YHUH";
+    const SERVICE_ID = "service_w15m64i";
+    const TEMPLATE_ID = "template_5b0u2tq";
+    const TARGET_EMAIL = "mohammedhesham872@gmail.com";
+
+    emailjs.init(PUBLIC_KEY);
+    emailjs.send(SERVICE_ID, TEMPLATE_ID, {
+        to_email: TARGET_EMAIL, student_name: name, exam_date: date,
+        total_score: score, success_rate: successRate,
+        answers_table: `Score: ${score}, Rate: ${successRate}`
+    }).then(() => {
+        status.textContent = '✅ تم الإرسال بنجاح!';
+        status.style.color = '#059669';
+    }).catch(err => {
+        status.textContent = '❌ فشل الإرسال';
+        status.style.color = '#dc2626';
+        btn.disabled = false;
+    });
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+    renderExam();
+    startTimer();
+});
+</script>
+</body>
+</html>
